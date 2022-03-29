@@ -25,6 +25,7 @@ let citaSchema = new Schema({
         type: Date,
         required: [true, 'Porfavor ingrese la fecha']
     },
+    /*
     dteHoraInicio: {
         type: Date,
         required: [true, 'Porfavor ingrese la hora inicio']
@@ -32,8 +33,8 @@ let citaSchema = new Schema({
     dteHoraFin: {
         type: Date,
         required: [true, 'Porfavor ingrese la hora fin']
-    },
-    blnEstado: {
+    },*/
+    blnActivo: {
         type: Boolean,
         default: true
     },

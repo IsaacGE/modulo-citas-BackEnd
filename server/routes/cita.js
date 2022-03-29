@@ -3,34 +3,147 @@ const express = require('express')
 const app = express()
 
 app.get('/', async(req, res) => {
-    return res.status(200).json({
-        ok: true,
-        status: 200,
-        text: "OK"
+    await citaModel.find({blnActivo: true})
+    .exec((err, citas) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            })
+        }
+        return res.status(200).json({
+            ok: true,
+            status: 200,
+            count: citas.length,
+            citas
+        })
     })
 })
 
-app.post('/', async(req, res) => {
+app.post('/', async (req, res) => {
     try {
-        let body = req.body
-        let cita = new citaModel(body)
-
-        console.log(body)
-
-        if (body) {
-            return res.status(200).json({
-                ok: true,
-                status: 200,
-                body
-            })
-        }
-    } catch (error) {
+        let cita = new citaModel(req.body);
+        let citaRegistrada = await cita.save();
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: 'Se ha registrado la cita exitosamente.',
+            cont: {
+                citaRegistrada
+            }
+        });
+    } catch (err) {
         return res.status(500).json({
             ok: false,
-            status: 500,
-            body
-        })
+            resp: 500,
+            msg: 'Error al intentar registrar la cita.',
+            cont: {
+                err: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
     }
-})
+});
+
+app.put('/', async (req, res) => {
+    try {
+        let citaBody = new citaModel(req.body);
+        let err = citaBody.validateSync();
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                resp: 400,
+                msg: 'Error de validación.',
+                cont: {
+                    err: Object.keys(err).length === 0 ? err.message : err
+                }
+            });
+        }
+        let { strNombre, strPersonaVisitante, dteFecha, dteHoraInicio, strDescripcion, strPersonaUtags, dteHoraFin } = citaBody;
+        let cita = await citaModel.findByIdAndUpdate(citaBody._id, { $set: { strNombre, strPersonaVisitante, dteFecha, dteHoraInicio, strDescripcion, strPersonaUtags, dteHoraFin } }, { new: true });
+
+        if (!cita) {
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'La cita que deseas modificar no existe.',
+                cont: {
+                    cita
+                }
+            });
+        }
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: 'Se ha actualizado la cita exitosamente.',
+            cont: {
+                cita
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: 'Error al intentar actualizar la cita.',
+            cont: {
+                err: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
+    }
+});
+
+app.delete('/', async (req, res) => {
+    const idCita = req.query.idCita;
+    const blnActivo = req.query.blnActivo;
+    try {
+        if (!idCita || idCita.length < 24) {
+            return res.status(400).json({
+                ok: false,
+                resp: 400,
+                msg: 'No se recibió un identificador válido.',
+                cont: {
+                    idCita: idCita | null
+                }
+            });
+        }
+        if (blnActivo != 'false' && blnActivo != 'true') {
+            return res.status(400).json({
+                ok: false,
+                resp: 400,
+                msg: 'No se recibió un valor booleano en el parámetro blnActivo.',
+                cont: {
+                    blnActivo: blnActivo || null
+                }
+            });
+        }
+        const cita = await citaModel.findByIdAndUpdate(idCita, { $set: { blnActivo } }, { new: true });
+        if (!cita) {
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: `La cita que deseas ${blnActivo === 'true' ? 'activar' : 'desactivar'} no existe.`,
+                cont: {
+                    cita
+                }
+            });
+        }
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: `Se ha ${blnActivo === 'true' ? 'activado' : 'desactivado'} la cita exitosamente.`,
+            cont: {
+                cita
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: `Error al intentar ${blnActivo === 'true' ? 'activar' : 'desactivar'} la cita.`,
+            cont: {
+                err: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
+    }
+});
 
 module.exports = app
