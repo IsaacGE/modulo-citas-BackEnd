@@ -21,24 +21,25 @@ let citaSchema = new Schema({
         type: String,
         required: [true, 'Porfavor ingrese Persona Utags']
     },
-    dteFecha: {
-        type: Date,
-        required: [true, 'Porfavor ingrese la fecha']
+    strHora: {
+        type: String,
+        required: [true, 'Porfavor ingrese la hora']
     },
-    /*
-    dteHoraInicio: {
+    dteFechaInicio: {
         type: Date,
-        required: [true, 'Porfavor ingrese la hora inicio']
+        required: [true, 'Porfavor ingrese la fecha inicio']
     },
-    dteHoraFin: {
+    dteFechaFin: {
         type: Date,
-        required: [true, 'Porfavor ingrese la hora fin']
-    },*/
+        required: [true, 'Porfavor ingrese la fecha fin']
+    },
     blnActivo: {
         type: Boolean,
         default: true
     },
-    //aJsnRol: [RolModel.schema]
-});
-//crea una coleccion
+},
+{
+    versionKey: false
+}
+);
 module.exports = mongoose.model('cita', citaSchema);

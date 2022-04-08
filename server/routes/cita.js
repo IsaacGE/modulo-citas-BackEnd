@@ -2,7 +2,7 @@ const citaModel = require('../models/cita.model')
 const express = require('express')
 const app = express()
 
-app.get('/', async(req, res) => {
+app.get('/getCitas', async(req, res) => {
     await citaModel.find({blnActivo: true})
     .exec((err, citas) => {
         if (err) {
@@ -20,7 +20,7 @@ app.get('/', async(req, res) => {
     })
 })
 
-app.post('/', async (req, res) => {
+app.post('/NuevaCita', async (req, res) => {
     try {
         let cita = new citaModel(req.body);
         let citaRegistrada = await cita.save();
@@ -44,7 +44,7 @@ app.post('/', async (req, res) => {
     }
 });
 
-app.put('/', async (req, res) => {
+app.put('/actCita', async (req, res) => {
     try {
         let citaBody = new citaModel(req.body);
         let err = citaBody.validateSync();
@@ -58,8 +58,8 @@ app.put('/', async (req, res) => {
                 }
             });
         }
-        let { strNombre, strPersonaVisitante, dteFecha, dteHoraInicio, strDescripcion, strPersonaUtags, dteHoraFin } = citaBody;
-        let cita = await citaModel.findByIdAndUpdate(citaBody._id, { $set: { strNombre, strPersonaVisitante, dteFecha, dteHoraInicio, strDescripcion, strPersonaUtags, dteHoraFin } }, { new: true });
+        let { strNombre, strPersonaVisitante, dteHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } = citaBody;
+        let cita = await citaModel.findByIdAndUpdate(citaBody._id, { $set: { strNombre, strPersonaVisitante, dteHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } }, { new: true });
 
         if (!cita) {
             return res.status(404).json({
@@ -91,7 +91,7 @@ app.put('/', async (req, res) => {
     }
 });
 
-app.delete('/', async (req, res) => {
+app.delete('/desactivarCita', async (req, res) => {
     const idCita = req.query.idCita;
     const blnActivo = req.query.blnActivo;
     try {
