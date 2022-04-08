@@ -1,12 +1,12 @@
 //Configuracion Predeterminada
 const { verificaToken } = require("../middlewares/autenticacion");
 
-//COnfiguracion de puerto
 process.env.PORT = process.env.PORT || 3000;
-// Declaracion de entorno, funcion que nos dara en que ambiente estamos
+
+// Entorno
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
-//Conexion a la base de datios 
+// Base de Datos
 process.env.URLDB = process.env.URLDB || 'mongodb+srv://isaacGE:5b5h1no9zXvuNBxQ@cluster0.ygjl4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 process.log = (process.env.NODE_ENV === 'dev');
 process.env.DB_CONEXION = process.env.DB_CONEXION || false;

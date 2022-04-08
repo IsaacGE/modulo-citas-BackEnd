@@ -100,32 +100,6 @@ app.post('/registrar', async (req, res) => {
             });
         }
         await user.save();
-        mailOptions = {
-            nmbEmail: 7,
-            strEmail: user.strEmail,
-            subject: '¡Bienvenido al sistema de Alertas Academicas!',
-            html: '<h1>Tu solicitud de registro esta siendo revisada.</h1><br>' +
-                '<h3>En un maximo de 24hrs. tu solicitud tendrá que estar resuelta.</h3>'
-        };
-
-        await mailer.sendEmail(mailOptions);
-        let listaDeCorreos = [];
-        await User.find({ idRole: { $in: ['5f1e2419ad1ebd0b08edab74', '5eeee0db16952756482d186a'] } }).then(async (data) => {
-            for (const admin of data) {
-                listaDeCorreos.push(admin.strEmail);
-            }
-            mailOptions = {
-                nmbEmail: 8,
-                strFullName: `${user.strName} ${user.strLastName} ${user.strMotherLastName}`,
-                strEmail: listaDeCorreos.join(','),
-                subject: '¡Nuevo Registro!',
-                html: '<h1>¡Por favor, revisa las solicitudes de registro!</h1><br>'
-            };
-            await mailer.sendEmail(mailOptions);
-
-        }).catch((err) => {
-            console.log(err);
-        });
         return res.status(200).json({
             ok: true,
             status: 200,
