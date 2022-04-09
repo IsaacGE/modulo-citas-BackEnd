@@ -3,24 +3,25 @@ const express = require('express')
 const app = express()
 
 app.get('/getCitas', async(req, res) => {
-    await citaModel.find({blnActivo: true})
-    .exec((err, citas) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
+    await citaModel.find({ idUsuario: req.query.idUsuario })
+        .exec((err, citas) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                })
+            }
+            return res.status(200).json({
+                ok: true,
+                status: 200,
+                count: citas.length,
+                citas
             })
-        }
-        return res.status(200).json({
-            ok: true,
-            status: 200,
-            count: citas.length,
-            citas
         })
-    })
 })
 
-app.post('/nuevaCita', async (req, res) => {
+
+app.post('/nuevaCita', async(req, res) => {
     try {
         let cita = new citaModel(req.body);
         let citaRegistrada = await cita.save();
@@ -44,7 +45,7 @@ app.post('/nuevaCita', async (req, res) => {
     }
 });
 
-app.put('/actCita', async (req, res) => {
+app.put('/updateCita', async(req, res) => {
     try {
         let citaBody = new citaModel(req.body);
         let err = citaBody.validateSync();
@@ -91,7 +92,7 @@ app.put('/actCita', async (req, res) => {
     }
 });
 
-app.delete('/desactivarCita', async (req, res) => {
+app.delete('/desactivarCita', async(req, res) => {
     const idCita = req.query.idCita;
     const blnActivo = req.query.blnActivo;
     try {

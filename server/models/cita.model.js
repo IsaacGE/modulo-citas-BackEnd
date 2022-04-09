@@ -5,6 +5,10 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let citaSchema = new Schema({
+    idUsuario: {
+        type: String,
+        required: [true, 'Id usuario no ingresado']
+    },
     strNombre: {
         type: String,
         required: [true, 'Por favor ingresa el nombre de la empresa']
@@ -37,9 +41,7 @@ let citaSchema = new Schema({
         type: Boolean,
         default: true
     },
-},
-{
+}, {
     versionKey: false
-}
-);
+});
 module.exports = mongoose.model('cita', citaSchema);
