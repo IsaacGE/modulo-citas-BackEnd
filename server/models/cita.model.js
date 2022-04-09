@@ -7,7 +7,7 @@ let Schema = mongoose.Schema;
 let citaSchema = new Schema({
     strNombre: {
         type: String,
-        required: [true, 'Por favor ingresa el nombre de la cita']
+        required: [true, 'Por favor ingresa el nombre de la empresa']
     },
     strDescripcion: {
         type: String,

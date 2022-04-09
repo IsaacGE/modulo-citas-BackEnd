@@ -20,7 +20,7 @@ app.get('/getCitas', async(req, res) => {
     })
 })
 
-app.post('/NuevaCita', async (req, res) => {
+app.post('/nuevaCita', async (req, res) => {
     try {
         let cita = new citaModel(req.body);
         let citaRegistrada = await cita.save();
@@ -58,8 +58,8 @@ app.put('/actCita', async (req, res) => {
                 }
             });
         }
-        let { strNombre, strPersonaVisitante, dteHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } = citaBody;
-        let cita = await citaModel.findByIdAndUpdate(citaBody._id, { $set: { strNombre, strPersonaVisitante, dteHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } }, { new: true });
+        let { strNombre, strPersonaVisitante, strHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } = citaBody;
+        let cita = await citaModel.findByIdAndUpdate(citaBody._id, { $set: { strNombre, strPersonaVisitante, strHora, dteFechaInicio, strDescripcion, strPersonaUtags, dteFechaFin } }, { new: true });
 
         if (!cita) {
             return res.status(404).json({
