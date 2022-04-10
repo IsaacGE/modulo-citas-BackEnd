@@ -6,8 +6,7 @@ let Schema = mongoose.Schema;
 
 let citaSchema = new Schema({
     idUsuario: {
-        type: String,
-        required: [true, 'Id usuario no ingresado']
+        type: String
     },
     strNombre: {
         type: String,
